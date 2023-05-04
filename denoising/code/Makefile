@@ -22,7 +22,11 @@ LDFLAGS   :=
 OBJECTS  = denoise.o drift.o
 OBJECTS2 = denoise2.o drift.o
 
-all:  denoise2
+all:  denoise2 install
+
+install:
+	mkdir -p ../../install/bin
+	install denoise2.exe ../../install/bin
 
 denoise: $(OBJECTS)
 	$(CXX) -o denoise.exe $(OBJECTS)  $(HIPOLIBS) $(LZ4LIBS)

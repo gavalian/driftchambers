@@ -1,6 +1,6 @@
-.PHONY: eigen json fplus frugal
+.PHONY: eigen json fplus frugal denoising
 
-all: eigen json fplus frugal
+all: eigen json fplus frugal denoising
 
 eigen:
 	rm -rf build && mkdir -p build install && cd build && cmake -DCMAKE_INSTALL_PREFIX=../install ../eigen && make install
@@ -17,4 +17,8 @@ frugal:
 
 clean:
 	rm -rf build install
+	make -C denoising/code clean
+
+denoising:
+	make -C denoising/code all
 
