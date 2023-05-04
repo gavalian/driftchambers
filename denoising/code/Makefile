@@ -33,7 +33,6 @@ denoise2: $(OBJECTS2)
 clean:
 	@echo 'Removing all build files'
 	@rm -rf *.o *~ *.exe example*hipo 
-	$(MAKE) -C submodules clean
 
 %.o: %.cc
 	$(CXX) -c $< -O3 $(CXXFLAGS) $(HIPOCFLAGS) $(LZ4INCLUDES)
