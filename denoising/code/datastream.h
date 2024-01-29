@@ -54,7 +54,7 @@ class datastream {
 	  printf("\n");
 	}
 	
-	for(int n = 0; n < events.size(); n++){
+	for(int n = 0; n < (int) events.size(); n++){
             // write the event in the output if it's not empty
             if(events[n].getSize()>16){ hw.addEvent(events[n]);}
             // reset event and read next in the file if any left

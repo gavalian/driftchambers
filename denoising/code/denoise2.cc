@@ -52,8 +52,9 @@ void createFrame(std::vector<hipo::event> &dataframe, int size){
  * @param reader 
  * @param dataframe 
  */
-void loadFrame(hipo::reader &reader, std::vector<hipo::event> &dataframe){ 
-   for(int loop = 0; loop < dataframe.size(); loop++){
+void loadFrame(hipo::reader &reader, std::vector<hipo::event> &dataframe){
+  int dsize = (int) dataframe.size();
+   for(int loop = 0; loop < dsize; loop++){
        dataframe[loop].reset();
        if(reader.next()==true) reader.read(dataframe[loop]);
    }
@@ -65,7 +66,8 @@ void loadFrame(hipo::reader &reader, std::vector<hipo::event> &dataframe){
  * @param databanks 
  */
 void  loadBanks(std::vector<hipo::event> &dataframe, std::vector<hipo::bank> &databanks){ 
-    for(int loop = 0; loop < dataframe.size(); loop++)
+  int dsize = (int) dataframe.size();
+  for(int loop = 0; loop < dsize; loop++)
        dataframe[loop].getStructure(databanks[loop]);
 }
 /**
@@ -89,7 +91,7 @@ void function(int order){
   while(isAlive==1){
       stream.pull(events);
       int nNonEmpty = 0;
-      for(int k = 0; k < events.size(); k++){
+      for(int k = 0; k < (int) events.size(); k++){
         if(events[k].getSize()>16){
            nNonEmpty++;
            events[k].getStructure(banks[k]);
@@ -118,8 +120,8 @@ void runstream(){//},std::vector<hipo::bank> *banks){//}, fdeep::model &model, s
     //   thread.join();
     }
     printf("-- created denoiser with %lu threads\n", threads.size());
-    for(int k = 0; k < threads.size(); k++) threads[k]->join();
-    for(int k = 0; k < threads.size(); k++) delete threads[k];
+    for(int k = 0; k < (int) threads.size(); k++) threads[k]->join();
+    for(int k = 0; k < (int) threads.size(); k++) delete threads[k];
     //threads.clear();
     //printf("---- done with %ld threads \n", databanks.size());
 }
