@@ -8,7 +8,7 @@ namespace dc {
   }
   
   void  drift::initvec(std::vector<float> &tensor){
-    if(tensor.size()!=rowSize*36) tensor.resize(rowSize*36);
+    if(((int) tensor.size())!=rowSize*36) tensor.resize(rowSize*36);
     for(int i = 0; i < rowSize*36; i++) tensor[i] = 0.0;
   }
   
@@ -91,7 +91,7 @@ namespace dc {
 					    );
       auto output = result[0].as_vector();
       std::vector<float>  buffer;
-      for(int jj=0; jj< output->size(); jj++){ buffer.push_back( (*output)[jj]);}
+      for(int jj=0; jj< (int) output->size(); jj++){ buffer.push_back( (*output)[jj]);}
       map(bank_iter,buffer,bank,s);
     }
     for(int nn = 0; nn < bank.getRows(); nn++) bank.putByte(3,nn,(int8_t) 10);
@@ -133,7 +133,7 @@ namespace dc {
       auto output = result[0].as_vector();
       std::vector<float>  buffer;
       
-      for(int jj=0; jj< output->size(); jj++){ buffer.push_back( (*output)[jj]);}
+      for(int jj=0; jj< (int) output->size(); jj++){ buffer.push_back( (*output)[jj]);}
       
       //map(bank_iter00,buffer, bank, s,  0.050,  1.00);
       //map(bank_iter40,buffer, bank, s,  0.010,  0.05);
@@ -176,7 +176,7 @@ namespace dc {
       if(order==90) bank.putByte(3,bank_iter00[nn],(int8_t) 10);
     }
     
-    for(int nn = 0; nn < bank_iter40.size(); nn++){
+    for(int nn = 0; nn < (int) bank_iter40.size(); nn++){
       int index = bank_iter40[nn];
       int order = bank.getInt(3,index);
       //bank.putByte(3,bank_iter40[nn],(int8_t) 40);
@@ -184,7 +184,7 @@ namespace dc {
       if(order==90) bank.putByte(3,bank_iter40[nn],(int8_t) 70);
     }
     
-    for(int nn = 0; nn < bank_iter50.size(); nn++){
+    for(int nn = 0; nn < (int) bank_iter50.size(); nn++){
       int index = bank_iter50[nn];
       int order = bank.getInt(3,index);
       //bank.putByte(3,bank_iter50[nn],(int8_t) 50);
