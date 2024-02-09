@@ -58,7 +58,7 @@ doctest:
 run_benchmarks:
 	rm -fr cmake-build-benchmarks
 	mkdir cmake-build-benchmarks
-	cd cmake-build-benchmarks ; cmake ../benchmarks -GNinja -DCMAKE_BUILD_TYPE=Release -DJSON_BuildTests=On
+	cd cmake-build-benchmarks ; cmake ../benchmarks -GNinja -DCMAKE_BUILD_TYPE=Release -DJSON_BuildTests=Off
 	cd cmake-build-benchmarks ; ninja
 	cd cmake-build-benchmarks ; ./json_benchmarks
 

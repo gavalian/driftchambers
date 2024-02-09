@@ -30,7 +30,7 @@ if (POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW)
 endif ()
 
-option(JSON_BuildTests          "Build the unit tests when BUILD_TESTING is enabled." ${MAIN_PROJECT})
+#option(JSON_BuildTests          "Build the unit tests when BUILD_TESTING is enabled." ${MAIN_PROJECT})
 option(JSON_CI                  "Enable CI build targets." OFF)
 option(JSON_Diagnostics         "Use extended diagnostic messages." OFF)
 option(JSON_ImplicitConversions "Enable implicit conversions." ON)
