@@ -15,7 +15,7 @@ LZ4LIBS     := -L$(HIPO_DIR)/lz4/lib -llz4 -lpthread
 LZ4INCLUDES := -I$(HIPO_DIR)/lz4/lib
 
 CXX       := g++
-CXXFLAGS  += -Wall -fPIC -std=c++14 -Wunknown-pragmas
+CXXFLAGS  += -Wall -fPIC -std=c++17 -Wunknown-pragmas
 LD        := g++
 LDFLAGS   :=
 
