@@ -9,7 +9,8 @@ HIPO_DIR=../..
 endif
 
 HIPOCFLAGS  := -I$(HIPO_DIR)/hipo4 -I../../install/include
-HIPOLIBS    := -L$(HIPO_DIR)/lib -lhipo4
+#HIPOLIBS    := -L$(HIPO_DIR)/lib -lhipo4
+HIPOLIBS    := $(HIPO_DIR)/lib/libhipo4.a
 
 LZ4LIBS     := -L$(HIPO_DIR)/lz4/lib -llz4 -lpthread
 LZ4INCLUDES := -I$(HIPO_DIR)/lz4/lib
@@ -40,4 +41,3 @@ clean:
 
 %.o: %.cc
 	$(CXX) -c $< -O3 $(CXXFLAGS) $(HIPOCFLAGS) $(LZ4INCLUDES)
-
