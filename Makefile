@@ -1,22 +1,32 @@
+define call_cmake
+	cmake -B $(1)/build -S $(1) -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=$(CURDIR)/install
+	cmake --build $(1)/build
+	cmake --install $(1)/build
+endef
+
 .PHONY: eigen json fplus frugal denoising
 
 all: eigen json fplus frugal denoising
 
 eigen:
-	rm -rf build && rm -rf install && mkdir -p build install && cd build && cmake -DCMAKE_INSTALL_PREFIX=../install ../eigen && make install
-	cd install/include && ln -s eigen3/Eigen .
+	@$(call call_cmake,$@)
+	cd install/include && ln -sf eigen3/Eigen .
 
 json:
-	rm -rf build && mkdir -p build install && cd build && cmake -DCMAKE_INSTALL_PREFIX=../install ../json && make install
+	@$(call call_cmake,$@)
 
 fplus:
-	rm -rf build && mkdir -p build install && cd build && cmake -DCMAKE_INSTALL_PREFIX=../install ../FunctionalPlus && make install
+	@$(call call_cmake,FunctionalPlus)
 
 frugal:
-	rm -rf build && mkdir -p build install && cd build && cmake -DCMAKE_INSTALL_PREFIX=../install ../frugally-deep && make install
+	@$(call call_cmake,frugally-deep)
 
 clean:
-	rm -rf build install
+	rm -rf eigen/build
+	rm -rf json/build
+	rm -rf FunctionalPlus/build
+	rm -rf frugally-deep/build
+	rm -rf install
 	make -C denoising/code clean
 
 denoising:
