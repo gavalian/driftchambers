@@ -3,16 +3,16 @@
 # AUTHOR: GAVALIAN DATE: 10/24/2018
 #********************************************************
 
-# check for $HIPO_DIR environment variable
-ifndef HIPO_DIR
-$(error ERROR: HIPO_DIR environment variable is not set; it should point to the HIPO installation prefix)
+# check for $HIPO environment variable
+ifndef HIPO
+$(error ERROR: HIPO environment variable is not set; it should point to the HIPO installation prefix)
 endif
 
 # check if pkg-config can find HIPO
-HIPO_PKGCONFIG := pkg-config --with-path $(HIPO_DIR)/lib/pkgconfig hipo4
+HIPO_PKGCONFIG := pkg-config --with-path $(HIPO)/lib/pkgconfig hipo4
 HIPO_FOUND := $(shell $(HIPO_PKGCONFIG); echo $$?)
 ifneq ($(HIPO_FOUND),0)
-$(error "pkg-config cannot find HIPO, or you do not have pkg-config; tried looking in $$HIPO_DIR = $(HIPO_DIR)")
+$(error "pkg-config cannot find HIPO, or you do not have pkg-config; tried looking in $$HIPO = $(HIPO)")
 endif
 
 HIPOCFLAGS := $(shell $(HIPO_PKGCONFIG) --cflags) -I../../install/include
