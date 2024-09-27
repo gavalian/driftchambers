@@ -15,8 +15,8 @@
 
 #include <fdeep/fdeep.hpp>
 #include "drift.h"
-#include "writer.h"
-#include "utils.h"
+#include <hipo4/writer.h>
+#include <hipo4/utils.h>
 #include "datastream.h"
 #include <thread>
 #include "cmdparser.hpp"
