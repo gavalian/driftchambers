@@ -15,7 +15,9 @@ ifneq ($(HIPO_FOUND),0)
 $(error "pkg-config cannot find HIPO, or you do not have pkg-config; tried looking in $$HIPO = $(HIPO)")
 endif
 
-HIPOCFLAGS := $(shell $(HIPO_PKGCONFIG) --cflags) -I../../install/include
+INSTALL_PREFIX = $(shell cd $(CURDIR)/../../install && pwd -P)
+
+HIPOCFLAGS := $(shell $(HIPO_PKGCONFIG) --cflags) -I$(INSTALL_PREFIX)/include
 HIPOLIBS := -L$(shell $(HIPO_PKGCONFIG) --variable libdir) -l:libhipo4.a
 
 LZ4LIBS     := -llz4 -lpthread
@@ -31,8 +33,14 @@ OBJECTS2 = denoise2.o drift.o
 all:  denoise2 install
 
 install:
-	mkdir -p ../../install/bin
-	install denoise2.exe ../../install/bin
+	mkdir -p $(INSTALL_PREFIX)/bin
+	install denoise2.exe $(INSTALL_PREFIX)/bin
+	mkdir -p $(INSTALL_PREFIX)/share/denoising
+	cp -v network/*.json $(INSTALL_PREFIX)/share/denoising
+	@echo "================================="
+	@echo "done installation; you may want to set the environment variable 'DENOISING_NETWORKS' to:"
+	@echo "  $(INSTALL_PREFIX)/share/denoising"
+	@echo "================================="
 
 denoise: $(OBJECTS)
 	$(CXX) -o denoise.exe $(OBJECTS)  $(HIPOLIBS) $(LZ4LIBS)

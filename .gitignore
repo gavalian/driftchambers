@@ -3,3 +3,5 @@ install
 *.o
 *.swp
 *.exe
+*.hipo
+*.h5
