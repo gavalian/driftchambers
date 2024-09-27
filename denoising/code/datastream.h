@@ -2,9 +2,9 @@
 #ifndef __DATASTREAM__
 #define __DATASTREAM__
 
-#include "reader.h"
-#include "writer.h"
-#include "utils.h"
+#include <hipo4/reader.h>
+#include <hipo4/writer.h>
+#include <hipo4/utils.h>
 
 namespace hipo {
 

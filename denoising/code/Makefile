@@ -3,17 +3,22 @@
 # AUTHOR: GAVALIAN DATE: 10/24/2018
 #********************************************************
 
+# check for $HIPO_DIR environment variable
 ifndef HIPO_DIR
-$(error HIPO_DIR is not set)
-HIPO_DIR=../..
+$(error ERROR: HIPO_DIR environment variable is not set; it should point to the HIPO installation prefix)
 endif
 
-HIPOCFLAGS  := -I$(HIPO_DIR)/hipo4 -I../../install/include -I$(HIPO_DIR)/include
-#HIPOLIBS    := -L$(HIPO_DIR)/lib -lhipo4
-HIPOLIBS    := $(HIPO_DIR)/lib/libhipo4.a
+# check if pkg-config can find HIPO
+HIPO_PKGCONFIG := pkg-config --with-path $(HIPO_DIR)/lib/pkgconfig hipo4
+HIPO_FOUND := $(shell $(HIPO_PKGCONFIG); echo $$?)
+ifneq ($(HIPO_FOUND),0)
+$(error "pkg-config cannot find HIPO, or you do not have pkg-config; tried looking in $$HIPO_DIR = $(HIPO_DIR)")
+endif
 
-LZ4LIBS     := -L$(HIPO_DIR)/lz4/lib -llz4 -lpthread
-LZ4INCLUDES := -I$(HIPO_DIR)/lz4/lib
+HIPOCFLAGS := $(shell $(HIPO_PKGCONFIG) --cflags) -I../../install/include
+HIPOLIBS := -L$(shell $(HIPO_PKGCONFIG) --variable libdir) -l:libhipo4.a
+
+LZ4LIBS     := -llz4 -lpthread
 
 CXX       := g++
 CXXFLAGS  += -Wall -fPIC -std=c++17 -Wunknown-pragmas
@@ -37,7 +42,7 @@ denoise2: $(OBJECTS2)
 
 clean:
 	@echo 'Removing all build files'
-	@rm -rf *.o *~ *.exe example*hipo 
+	@rm -rf *.o *~ *.exe example*hipo
 
 %.o: %.cc
-	$(CXX) -c $< -O3 $(CXXFLAGS) $(HIPOCFLAGS) $(LZ4INCLUDES)
+	$(CXX) -c $< -O3 $(CXXFLAGS) $(HIPOCFLAGS)
