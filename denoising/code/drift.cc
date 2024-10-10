@@ -66,8 +66,10 @@ namespace dc {
       int     sec = bank.getInt(0,i);
       int   layer = bank.getInt(1,i);
       int    comp = bank.getInt(2,i);
-      
-      if(sector==sec){
+      int   order = bank.getInt(3,i);
+      // ---- changed. considering only original hits and background merged
+      // ----          hits (order == 0 or 10). the order==20 hits are ignored.
+      if(sector==sec&&(order==0||order==10)){
 	int index = getIndex(layer,comp);
 	tensor[index] = 1.0;
       }
