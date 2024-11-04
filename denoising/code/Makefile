@@ -3,17 +3,24 @@
 # AUTHOR: GAVALIAN DATE: 10/24/2018
 #********************************************************
 
-ifndef HIPO_DIR
-$(error HIPO_DIR is not set)
-HIPO_DIR=../..
+# check for $HIPO environment variable
+ifndef HIPO
+$(error ERROR: HIPO environment variable is not set; it should point to the HIPO installation prefix)
 endif
 
-HIPOCFLAGS  := -I$(HIPO_DIR)/hipo4 -I../../install/include -I$(HIPO_DIR)/include
-#HIPOLIBS    := -L$(HIPO_DIR)/lib -lhipo4
-HIPOLIBS    := $(HIPO_DIR)/lib/libhipo4.a
+# check if pkg-config can find HIPO
+HIPO_PKGCONFIG := pkg-config --with-path $(HIPO)/lib/pkgconfig hipo4
+HIPO_FOUND := $(shell $(HIPO_PKGCONFIG); echo $$?)
+ifneq ($(HIPO_FOUND),0)
+$(error "pkg-config cannot find HIPO, or you do not have pkg-config; tried looking in $$HIPO = $(HIPO)")
+endif
 
-LZ4LIBS     := -L$(HIPO_DIR)/lz4/lib -llz4 -lpthread
-LZ4INCLUDES := -I$(HIPO_DIR)/lz4/lib
+INSTALL_PREFIX = $(shell cd $(CURDIR)/../../install && pwd -P)
+
+HIPOCFLAGS := $(shell $(HIPO_PKGCONFIG) --cflags) -I$(INSTALL_PREFIX)/include
+HIPOLIBS := -L$(shell $(HIPO_PKGCONFIG) --variable libdir) -l:libhipo4.a
+
+LZ4LIBS     := -llz4 -lpthread
 
 CXX       := g++
 CXXFLAGS  += -Wall -fPIC -std=c++17 -Wunknown-pragmas
@@ -26,8 +33,14 @@ OBJECTS2 = denoise2.o drift.o
 all:  denoise2 install
 
 install:
-	mkdir -p ../../install/bin
-	install denoise2.exe ../../install/bin
+	mkdir -p $(INSTALL_PREFIX)/bin
+	install denoise2.exe $(INSTALL_PREFIX)/bin
+	mkdir -p $(INSTALL_PREFIX)/share/denoising
+	cp -v network/*.json $(INSTALL_PREFIX)/share/denoising
+	@echo "================================="
+	@echo "done installation; you may want to set the environment variable 'DENOISING_NETWORKS' to:"
+	@echo "  $(INSTALL_PREFIX)/share/denoising"
+	@echo "================================="
 
 denoise: $(OBJECTS)
 	$(CXX) -o denoise.exe $(OBJECTS)  $(HIPOLIBS) $(LZ4LIBS)
@@ -37,7 +50,7 @@ denoise2: $(OBJECTS2)
 
 clean:
 	@echo 'Removing all build files'
-	@rm -rf *.o *~ *.exe example*hipo 
+	@rm -rf *.o *~ *.exe example*hipo
 
 %.o: %.cc
-	$(CXX) -c $< -O3 $(CXXFLAGS) $(HIPOCFLAGS) $(LZ4INCLUDES)
+	$(CXX) -c $< -O3 $(CXXFLAGS) $(HIPOCFLAGS)

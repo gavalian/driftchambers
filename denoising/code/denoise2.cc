@@ -15,8 +15,8 @@
 
 #include <fdeep/fdeep.hpp>
 #include "drift.h"
-#include "writer.h"
-#include "utils.h"
+#include <hipo4/writer.h>
+#include <hipo4/utils.h>
 #include "datastream.h"
 #include <thread>
 #include "cmdparser.hpp"
@@ -129,9 +129,14 @@ void runstream(){//},std::vector<hipo::bank> *banks){//}, fdeep::model &model, s
  * @brief configure command line parser with input arguments
  */
 void configure_parser(cli::Parser& parser){
+
+  std::string default_network_path = "network";
+  if(auto path{std::getenv("DENOISING_NETWORKS")}; path != nullptr)
+    default_network_path = std::string(path);
+
   parser.set_required<std::string>("i", "input", "input file name");
   parser.set_optional<std::string>("o", "output", "output.h5", "output denoised file name");
-  parser.set_optional<std::string>("n","network","network/cnn_autoenc_0f_112.json", "neural network file name");
+  parser.set_optional<std::string>("n","network",default_network_path+std::string("/cnn_autoenc_0f_112.json"), "neural network file name");
   
   parser.set_optional<int>("t", "threads",  8,"number of threads to run");
   parser.set_optional<int>("f",  "frames", 16,"number of events in each frame");
