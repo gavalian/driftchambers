@@ -8,10 +8,9 @@
 #HIPO_DIR=../..
 #endif
 
-FRUGALLY  := -I$(HIPO_DIR)/hipo4 -I../../install/include -I$(HIPO_DIR)/include
-
+FRUGALLY  := -I../../install/include
 CXX       := g++
-CXXFLAGS  += -Wall -fPIC -std=c++17 -Wunknown-pragmas
+CXXFLAGS  += -Wall -fPIC -std=c++17 -Wunknown-pragmas -Wunused-variable
 LD        := g++
 LDFLAGS   :=
 
@@ -46,4 +45,4 @@ clean:
 	@rm -rf *.o *~ *.exe example*hipo 
 
 %.o: %.cc
-	$(CXX) -c $< -O3 $(CXXFLAGS) 
+	$(CXX) -c $< -O3 $(CXXFLAGS) $(FRUGALLY)
