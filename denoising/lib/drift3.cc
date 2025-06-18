@@ -39,7 +39,8 @@ namespace dc {
       for(int i = 0; i < nrows; i++){	
          int offset = start + i*rowSize;
          int    sec = *reinterpret_cast<int*>(&buffer[offset+4]);
-         if(sec==sector){
+	 int  order = *reinterpret_cast<int*>(&buffer[offset+16]);
+         if(sec==sector&&order>0){
             int layer = *reinterpret_cast<int*>(&buffer[offset+8]);
             int  wire = *reinterpret_cast<int*>(&buffer[offset+12]);
             int position = getIndex(layer,wire);
@@ -49,8 +50,7 @@ namespace dc {
   }
   
   int drift3::process(const fdeep::model &model, const char *buffer){
-    std::vector<float>  dcmat;    
-
+    std::vector<float>  dcmat;
     char *data = const_cast<char*> (buffer);
     int  group = *reinterpret_cast<uint16_t*>(&data[0]);
     int   item = *reinterpret_cast< uint8_t*>(&data[2]);
