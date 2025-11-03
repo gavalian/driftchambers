@@ -18,6 +18,7 @@ OBJECTS  = denoise3.o drift.o
 OBJECTS2 = denoise2.o drift.o
 OBJECTS_LIB = drift3.o
 OBJECTS_BEN = drift3.o benchmark.o
+OBJECTS_LSVM = drift3.o lsvmparser.o
 
 all:  slib
 
@@ -26,6 +27,9 @@ lib: $(OBJECTS_LIB)
 
 bench: $(OBJECTS_BEN)
 	$(CXX) -o benchmark.exe $(OBJECTS_BEN) -I../../install/include
+
+lsvm: $(OBJECTS_LSVM)
+	$(CXX) -o lsvm.exe $(OBJECTS_LSVM) -I../../install/include
 
 slib: $(OBJECTS_LIB)
 	$(CXX) -shared $(OBJECTS_LIB) -o libdenoiser.so

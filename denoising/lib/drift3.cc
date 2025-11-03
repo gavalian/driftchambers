@@ -6,7 +6,7 @@
 //      ▀▀▀▀▀•  ▀▀▀ ▀▀ █▪ ▀█▄▀▪▀▀▀ ▀▀▀▀  ▀▀▀ .▀  ▀
 //****************************************************************/
 // Author: G.Gavalian (02/2025)
-//
+//================================================================
 
 #include "drift3.h"
 
@@ -16,10 +16,27 @@ dc::drift3  chamber;
 void dc3_init(const char *modelFile){
   const auto modelLocal = fdeep::load_model(modelFile); 
   neuralNetwork = std::make_unique<fdeep::model>(std::move(modelLocal));
+  printf("\n**** UPDATED LIBRARY: INCLUDES DC4_PROCESS FOR DENOISING 4 ****\n\n");
 }
 
+//std::unique_ptr<fdeep::model> dc3_model(){ return neuralNetwork;}
 void dc3_process(const char *leaf){
   chamber.process(*neuralNetwork,leaf);
+}
+
+void dc4_process(const char *leaf){
+  chamber.process4(*neuralNetwork,leaf);
+}
+
+void dc5_process(std::vector<float> &data){
+  fdeep::tensors result = (*neuralNetwork).predict(
+					      { fdeep::tensor(
+			 fdeep::tensor_shape(static_cast<std::size_t>(504),
+				       static_cast<std::size_t>(36),
+				       static_cast<std::size_t>(1)),data)});
+  auto output = result[0].as_vector();
+
+  for(int i = 0; i < data.size(); i++) data[i] = (*output)[i];
 }
 
 namespace dc {
@@ -47,6 +64,43 @@ namespace dc {
             tensor[position] = 1.0;
          }
       }
+  }
+
+  int drift3::process4(const fdeep::model &model, const char *buffer){
+        std::vector<float>  cmat;
+	char *data = const_cast<char*> (buffer);
+	int  group = *reinterpret_cast<uint16_t*>(&data[0]);
+	int   item = *reinterpret_cast< uint8_t*>(&data[2]);
+	int   type = *reinterpret_cast< uint8_t*>(&data[3]);
+	int   word = *reinterpret_cast<uint32_t*>(&data[4]);
+	
+	int   format = (word>>24)&0x000000FF;
+	int   length = word&0x00FFFFFF;
+	format = 1;
+	length = 90*260*4+1;
+	//printf("%d, %d, %d %d %d\n",group,item, type, format, length);
+	int     size = length - format;
+	int    nrows = size/(4);
+	if(nrows!=90*260) { printf("dc4_process:: error :: the rows of the node is %d, should have been %d\n",
+				   nrows,90*260); return -1; }
+	cmat.resize(90*260);
+	for(int i = 0; i < 90*260; i++){
+	  float value = *reinterpret_cast<float*>(&data[8+format+i*4]); 
+	  cmat[i] = value>0.00001?1.0:0.0;
+	}
+
+	fdeep::tensors result = model.predict(
+					      { fdeep::tensor(
+		   fdeep::tensor_shape(static_cast<std::size_t>(90),
+				       static_cast<std::size_t>(260),
+				       static_cast<std::size_t>(1)),cmat)});
+	 auto output = result[0].as_vector();
+	 
+	 for(int i = 0; i < 90*260; i++){
+	   *reinterpret_cast<float*>(&data[8+format+i*4]) = (*output)[i];
+	 }
+
+	 return 0;
   }
   
   int drift3::process(const fdeep::model &model, const char *buffer){

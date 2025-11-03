@@ -24,6 +24,9 @@
 extern "C" {
   void dc3_init(const char *modelFile);
   void dc3_process(const char *buffer);
+  void dc4_process(const char *buffer);
+  void dc5_process(std::vector<float> &data);
+  //std::unique_ptr<fdeep::model> dc3_model();
 }
 
 namespace dc {
@@ -49,6 +52,7 @@ namespace dc {
     void  create(std::vector<float> &tensor, char *buffer, int sector, int start, int rowSize, int nrows);  
     //void  create( std::vector<float> &tensor, const char *buffer, int sector);
     int   process( const fdeep::model &model, const char *buffer);
+    int   process4( const fdeep::model &model, const char *buffer);
   };
 }
 /*

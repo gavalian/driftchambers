@@ -20,7 +20,15 @@ std::vector<char> createLeaf();
 // -------------------------------------------------
 // Benchmark driver
 // -------------------------------------------------
-int main(int argc, char* argv[])
+int main(){
+  dc3_init("network/cnn_autoenc_260x90.json");
+  std::vector<float> vec;
+  vec.resize(8+1+90*260*4);
+  dc4_process(reinterpret_cast<char*> (&vec[0]));
+  return 1;
+}
+
+int main3(int argc, char* argv[])
 {
     // ---- 1. read n ---------------------------------------------------------
     if (argc < 2) {
