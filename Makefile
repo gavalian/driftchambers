@@ -1,4 +1,7 @@
 define call_cmake
+        echo '==============='
+        echo CMAKE $(1)
+        echo '==============='
 	cmake -B $(1)/build -S $(1) -DCMAKE_INSTALL_PREFIX=install -DCMAKE_PREFIX_PATH=$(CURDIR)/install
 	cmake --build $(1)/build
 	cmake --install $(1)/build
